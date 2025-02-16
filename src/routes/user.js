@@ -11,7 +11,7 @@ const USER_SAFE_DATA = "firstName lastName age gender about skills photoUrl";
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
-        console.log("Logged In User" + loggedInUser);
+        //console.log("Logged In User" + loggedInUser);
 
         const connectionRequests = await ConnectionRequest.find({
             toUserId: loggedInUser._id,
@@ -38,6 +38,8 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
 userRouter.get("/user/connections", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
+        console.log(loggedInUser + " => logged in user");
+
         const connectioRequests = await ConnectionRequest.find({
             $or: [
                 { toUserId: loggedInUser._id, status: "accepted" },
@@ -46,6 +48,8 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         })
             .populate("fromUserId", USER_SAFE_DATA)
             .populate("toUserId", USER_SAFE_DATA);
+        console.log(connectioRequests + " = >Connection Requests");
+
         const data = connectioRequests.map((row) => {
             if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
                 return row.toUserId;
