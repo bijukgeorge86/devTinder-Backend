@@ -11,7 +11,6 @@ const USER_SAFE_DATA = "firstName lastName age gender about skills photoUrl";
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
-        //console.log("Logged In User" + loggedInUser);
 
         const connectionRequests = await ConnectionRequest.find({
             toUserId: loggedInUser._id,
@@ -30,7 +29,9 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
             data: connectionRequests,
         });
     } catch (err) {
-        res.status(400).send("ERROR : " + err.message);
+        res.status(400).send(
+            "ERROR in Viewing Requests Received : " + err.message
+        );
     }
 });
 
@@ -38,7 +39,6 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
 userRouter.get("/user/connections", userAuth, async (req, res) => {
     try {
         const loggedInUser = req.user;
-        console.log(loggedInUser + " => logged in user");
 
         const connectioRequests = await ConnectionRequest.find({
             $or: [
@@ -48,7 +48,6 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         })
             .populate("fromUserId", USER_SAFE_DATA)
             .populate("toUserId", USER_SAFE_DATA);
-        console.log(connectioRequests + " = >Connection Requests");
 
         const data = connectioRequests.map((row) => {
             if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -61,7 +60,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
             data,
         });
     } catch (err) {
-        res.status(400).send("ERROR : " + err.message);
+        res.status(400).send("ERROR in Viewing Connections : " + err.message);
     }
 });
 
@@ -100,7 +99,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
 
         res.json({ data: users });
     } catch (err) {
-        res.status(400).json({ message: "ERROR : " + err.message });
+        res.status(400).json({ message: "ERROR in FEED: " + err.message });
     }
 });
 

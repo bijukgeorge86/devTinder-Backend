@@ -5,6 +5,8 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
+const sendEmail = require("../aws/sendEmail");
+
 //
 requestRouter.post("/sendConnectionRequest", userAuth, async (req, res) => {
     const user = req.user;
@@ -26,8 +28,8 @@ requestRouter.post(
             const fromUserId = req.user._id;
             const toUserId = req.params.toUserId;
             const status = req.params.status;
-            //console.log("Inside => /request/send/:status/:toUserId");
             const allowedStatus = ["ignored", "interested"];
+
             if (!allowedStatus.includes(status)) {
                 return res.status(400).json({
                     message: "Invalid Status Type : " + status,
@@ -60,6 +62,14 @@ requestRouter.post(
             });
 
             const data = await connectionRequest.save();
+
+            const emailRes = await sendEmail.run(
+                "A new friend request from " + req.user.firstName,
+                req.user.firstName + " is " + status + " in " + toUser.firstName
+            );
+
+            //console.log(emailRes);
+
             res.json({
                 message:
                     req.user.firstName +
@@ -74,7 +84,7 @@ requestRouter.post(
                 data,
             });
         } catch (err) {
-            res.status(400).send("ERROR !!!: " + err.message);
+            res.status(400).send("ERROR in Sending Request : " + err.message);
         }
     }
 );
@@ -105,14 +115,14 @@ requestRouter.post(
                     .json({ message: "Connection request is not found" });
             }
             connectionRequest.status = status;
-            console.log("Inside => /request/review/:status/:requestId");
+            //console.log("Inside => /request/review/:status/:requestId");
             const data = await connectionRequest.save();
             res.status(200).json({
                 message: "Connection Request :" + status,
                 data,
             });
         } catch (err) {
-            res.status(400).send("ERROR !!!! : " + err.message);
+            res.status(400).send("ERROR in Reviewing Requets : " + err.message);
         }
     }
 );

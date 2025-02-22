@@ -4,6 +4,8 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+require("dotenv").config();
+
 app.use(
     cors({
         origin: "http://localhost:1119",
@@ -26,8 +28,12 @@ app.use("/", userRouter);
 connectDB()
     .then(() => {
         console.log("Database Connection established");
-        app.listen(1911, () => {
-            console.log("Server Successfully listening to 1911....");
+        app.listen(process.env.PORT, () => {
+            console.log(
+                "Server Successfully listening to " +
+                    process.env.PORT +
+                    " ... !!!"
+            );
         });
     })
     .catch((err) => {

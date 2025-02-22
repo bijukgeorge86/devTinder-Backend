@@ -43,7 +43,7 @@ authRouter.post("/signup", async (req, res) => {
 
         res.json({ message: "User Added Successfully.!", data: savedUser });
     } catch (err) {
-        res.status(400).send("ERROR  : " + err.message);
+        res.status(400).send("ERROR in Signup : " + err.message);
     }
 });
 
@@ -70,7 +70,7 @@ authRouter.post("/login", async (req, res) => {
             throw new Error("Invalid Credentials...!!!!!");
         }
     } catch (err) {
-        res.status(400).send("User Login Failed : " + err.message);
+        res.status(400).send("ERROR in Login : " + err.message);
     }
 });
 
