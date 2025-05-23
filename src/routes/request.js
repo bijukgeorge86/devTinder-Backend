@@ -47,7 +47,6 @@ requestRouter.post(
                     { fromUserId: toUserId, toUserId: fromUserId },
                 ],
             });
-            //console.log(existingConnectionRequest);
 
             if (existingConnectionRequest) {
                 return res.status(400).send({
@@ -67,8 +66,6 @@ requestRouter.post(
                 "A new friend request from " + req.user.firstName,
                 req.user.firstName + " is " + status + " in " + toUser.firstName
             );
-
-            //console.log(emailRes);
 
             res.json({
                 message:
@@ -115,7 +112,6 @@ requestRouter.post(
                     .json({ message: "Connection request is not found" });
             }
             connectionRequest.status = status;
-            //console.log("Inside => /request/review/:status/:requestId");
             const data = await connectionRequest.save();
             res.status(200).json({
                 message: "Connection Request :" + status,
